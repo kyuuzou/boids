@@ -68,6 +68,8 @@ public class BoidManager : MonoBehaviour {
             boid.Velocity += (avoidance + matching + centering) * Time.deltaTime;
             boid.Position += boid.Velocity;
 
+            this.WrapAroundBounds(ref boid);
+
             boid.Transform.position = boid.Position;
             boids[i] = boid;
         }
@@ -98,5 +100,21 @@ public class BoidManager : MonoBehaviour {
 
     private void Update() {
         this.MoveBoids();
+    }
+
+    private void WrapAroundBounds(ref Boid boid) {
+        if (! this.bounds.Contains(boid.Position)) {
+            Vector3 position = boid.Position;
+
+            if (position.x < this.bounds.min.x || position.x > this.bounds.max.x) {
+                position.x = (this.bounds.extents.x - 0.01f) * Mathf.Sign(position.x) * -1.0f;
+            }
+
+            if (position.y < this.bounds.min.y || position.y > this.bounds.max.y) {
+                position.y = (this.bounds.extents.y - 0.01f) * Mathf.Sign(position.y) * -1.0f;
+            }
+
+            boid.Position = position;
+        }
     }
 }
