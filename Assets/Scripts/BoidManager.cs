@@ -83,6 +83,9 @@ public class BoidManager : MonoBehaviour {
             Quaternion rotation = Quaternion.Euler(0.0f, 0.0f, Random.Range(0.0f, 360.0f));
             Transform transform = Object.Instantiate<Transform>(this.boidPrefab, position, rotation, this.boidParent);
             
+            Color randomYellowish = Random.ColorHSV(0.1f, 0.3f, 0.5f, 1.0f, 0.5f, 1.0f, 1.0f, 1.0f);
+            transform.GetComponent<MeshRenderer>().material.color = randomYellowish;
+
             Boid boid = new Boid {
                 Position = transform.position,
                 Transform = transform,
