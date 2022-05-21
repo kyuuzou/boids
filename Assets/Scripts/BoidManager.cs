@@ -55,6 +55,12 @@ public class BoidManager : MonoBehaviour {
         return Vector3.zero;
     }
 
+    private void LimitSpeed(ref Boid boid) {
+        if (Mathf.Abs(boid.Velocity.magnitude) > this.maximumVelocity) {
+            boid.Velocity = boid.Velocity.normalized * this.maximumVelocity;
+        }
+    }
+    
     private void MoveBoids() {
         Vector3 avoidance, matching, centering;
 
@@ -66,6 +72,7 @@ public class BoidManager : MonoBehaviour {
             centering = this.CalculateFlockCentering(ref boid);
             
             boid.Velocity += (avoidance + matching + centering) * Time.deltaTime;
+            this.LimitSpeed(ref boid);
             boid.Position += boid.Velocity;
 
             this.WrapAroundBounds(ref boid);
