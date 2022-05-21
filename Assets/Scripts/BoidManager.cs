@@ -44,7 +44,17 @@ public class BoidManager : MonoBehaviour {
             return Vector3.zero;
         }
 
-        return Vector3.zero;
+        Vector3 perceivedCenter = Vector3.zero;
+
+        // TODO: this will not scale, needs to take into account only the closest neighbours (maybe a quadtree)
+        foreach (Boid otherBoid in this.boids) {
+            if (boid.Transform != otherBoid.Transform) {
+                perceivedCenter += otherBoid.Position;
+            }
+        }
+
+        perceivedCenter /= (this.boids.Count - 1);
+        return (perceivedCenter - boid.Position) / 100.0f;
     }
     
     private Vector3 CalculateVelocityMatching(ref Boid boid) {
