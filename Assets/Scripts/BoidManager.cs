@@ -63,15 +63,23 @@ public class BoidManager : MonoBehaviour {
         }
 
         Vector3 perceivedCenter = Vector3.zero;
+        int perceivedBoids = 0;
 
         // TODO: this will not scale, needs to take into account only the closest neighbours (maybe a quadtree)
         foreach (Boid otherBoid in this.boids) {
-            if (boid.Transform != otherBoid.Transform) {
-                perceivedCenter += otherBoid.Position;
+            if (boid.Transform == otherBoid.Transform || !IsWithinVisibleDistance(boid, otherBoid)) {
+                continue;
             }
+            
+            perceivedCenter += otherBoid.Position;
+            perceivedBoids ++;
         }
 
-        perceivedCenter /= (this.boids.Count - 1);
+        if (perceivedBoids == 0) {
+            return Vector3.zero;
+        }
+        
+        perceivedCenter /= (perceivedBoids);
         return (perceivedCenter - boid.Position) / 50.0f;
     }
     
@@ -83,6 +91,10 @@ public class BoidManager : MonoBehaviour {
         return Vector3.zero;
     }
 
+    private bool IsWithinVisibleDistance(Boid boid, Boid otherBoid) {
+        return Vector2.Distance(boid.Position, otherBoid.Position) < 10.0f;
+    }
+    
     private void LimitSpeed(ref Boid boid) {
         float magnitude = Mathf.Abs(boid.Velocity.magnitude);
         
