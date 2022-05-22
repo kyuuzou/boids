@@ -87,8 +87,26 @@ public class BoidManager : MonoBehaviour {
         if (! this.VelocityMatching) {
             return Vector3.zero;
         }
+
+        Vector3 velocityAverage = Vector3.zero;
+        int perceivedBoids = 0;
+
+        foreach (Boid otherBoid in this.boids) {
+            if (boid.Transform == otherBoid.Transform || ! this.IsWithinVisibleDistance(boid, otherBoid)) {
+                continue;
+            }
+
+            velocityAverage += otherBoid.Velocity;
+            perceivedBoids ++;
+        }
+
+        if (perceivedBoids == 0) {
+            return Vector3.zero;
+        }
         
-        return Vector3.zero;
+        velocityAverage /= perceivedBoids;
+        
+        return velocityAverage - boid.Velocity;
     }
 
     private bool IsWithinVisibleDistance(Boid boid, Boid otherBoid) {
