@@ -1,5 +1,8 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Object = UnityEngine.Object;
+using Random = UnityEngine.Random;
 
 public class BoidManager : MonoBehaviour {
 
@@ -38,8 +41,20 @@ public class BoidManager : MonoBehaviour {
         if (! this.CollisionAvoidance) {
             return Vector3.zero;
         }
-        
-        return Vector3.zero;
+
+        Vector3 close = Vector3.zero;
+
+        foreach (Boid otherBoid in this.boids) {
+            if (boid.Transform == otherBoid.Transform) {
+                continue;
+            }
+
+            if (Vector2.Distance(boid.Position, otherBoid.Position) < 3.0f) {
+                close += boid.Position -otherBoid.Position;
+            }
+        }
+
+        return close;
     }
     
     private Vector3 CalculateFlockCentering(ref Boid boid) {
