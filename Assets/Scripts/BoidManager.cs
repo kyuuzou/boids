@@ -88,6 +88,7 @@ public class BoidManager : MonoBehaviour {
             this.WrapAroundBounds(ref boid);
 
             boid.Transform.position = boid.Position;
+            boid.Transform.up = boid.Velocity;
             boids[i] = boid;
         }
     }
