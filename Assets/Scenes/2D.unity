@@ -689,7 +689,8 @@ MonoBehaviour:
   totalBoids: 100
   boidParent: {fileID: 882096845}
   boidPrefab: {fileID: 2266453357283842564, guid: 51c8ee4dbcd644075a82e2a8c427affd, type: 3}
-  maximumVelocity: 10
+  maximumVelocity: 0.25
+  minimumVelocity: 0.2
   boundingVolume: {fileID: 1863691737}
 --- !u!1 &1133943554
 GameObject:

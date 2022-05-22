@@ -17,7 +17,10 @@ public class BoidManager : MonoBehaviour {
     private Transform boidPrefab;
 
     [SerializeField]
-    private float maximumVelocity = 1.0f;
+    private float maximumVelocity = 0.25f;
+
+    [SerializeField]
+    private float minimumVelocity = 0.2f;
 
     [SerializeField]
     private SpriteRenderer boundingVolume;
@@ -54,7 +57,7 @@ public class BoidManager : MonoBehaviour {
         }
 
         perceivedCenter /= (this.boids.Count - 1);
-        return (perceivedCenter - boid.Position) / 100.0f;
+        return (perceivedCenter - boid.Position) / 50.0f;
     }
     
     private Vector3 CalculateVelocityMatching(ref Boid boid) {
@@ -66,8 +69,12 @@ public class BoidManager : MonoBehaviour {
     }
 
     private void LimitSpeed(ref Boid boid) {
-        if (Mathf.Abs(boid.Velocity.magnitude) > this.maximumVelocity) {
+        float magnitude = Mathf.Abs(boid.Velocity.magnitude);
+        
+        if (magnitude > this.maximumVelocity) {
             boid.Velocity = boid.Velocity.normalized * this.maximumVelocity;
+        } else if (magnitude < this.minimumVelocity) {
+            boid.Velocity = boid.Velocity.normalized * this.minimumVelocity;
         }
     }
     
@@ -80,15 +87,21 @@ public class BoidManager : MonoBehaviour {
             avoidance = this.CalculateCollisionAvoidance(ref boid);
             matching = this.CalculateVelocityMatching(ref boid);
             centering = this.CalculateFlockCentering(ref boid);
+
+            Vector2 acceleration = (avoidance + matching + centering) * Time.deltaTime;
             
-            boid.Velocity += (avoidance + matching + centering) * Time.deltaTime;
-            this.LimitSpeed(ref boid);
+            if (!Mathf.Approximately(acceleration.magnitude, 0.0f)) {
+                boid.Velocity += Vector3.RotateTowards(boid.Velocity, acceleration, 5.0f, this.maximumVelocity);
+                boid.Velocity.z = 0.0f;
+                this.LimitSpeed(ref boid);
+            }
+
             boid.Position += boid.Velocity;
 
             this.WrapAroundBounds(ref boid);
 
             boid.Transform.position = boid.Position;
-            boid.Transform.up = boid.Velocity;
+            boid.Transform.up = boid.Velocity.normalized;
             boids[i] = boid;
         }
     }
@@ -107,7 +120,7 @@ public class BoidManager : MonoBehaviour {
             Boid boid = new Boid {
                 Position = transform.position,
                 Transform = transform,
-                Velocity = transform.up * this.maximumVelocity * 0.5f
+                Velocity = transform.up * this.maximumVelocity
             };
             
             this.boids.Add(boid);
