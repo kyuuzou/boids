@@ -1,15 +1,28 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
-using Object = UnityEngine.Object;
-using Random = UnityEngine.Random;
+using UnityEngine.UI;
 
 public class BoidManager : MonoBehaviour {
 
     public bool CollisionAvoidance { get; set; } = false;
     public bool FlockCentering { get; set; } = false;
     public bool VelocityMatching { get; set; } = false;
+    public bool WrapAroundBoundingVolume { get; set; } = true;
+
+    [Header("UI Toggles")]
+    [SerializeField]
+    private Toggle collisionAvoidanceToggle;
     
+    [SerializeField]
+    private Toggle flockCenteringToggle;
+    
+    [SerializeField]
+    private Toggle velocityMatchingToggle;
+    
+    [SerializeField]
+    private Toggle wrapAroundBoundingVolumeToggle;
+    
+    [Header("Boid settings")]
     [SerializeField]
     private int totalBoids = 100;
 
@@ -25,9 +38,10 @@ public class BoidManager : MonoBehaviour {
     [SerializeField]
     private float minimumSpeed = 0.2f;
 
+    [Header("Other")]
     [SerializeField]
     private SpriteRenderer boundingVolume;
-
+    
     private List<Boid> boids;
     private Bounds bounds;
 
@@ -144,7 +158,9 @@ public class BoidManager : MonoBehaviour {
 
             boid.Position += boid.Velocity;
 
-            this.WrapAroundBounds(ref boid);
+            if (this.WrapAroundBoundingVolume) {
+                this.WrapAroundBounds(ref boid);
+            }
 
             boid.Transform.position = boid.Position;
             boid.Transform.up = boid.Velocity.normalized;
@@ -174,7 +190,11 @@ public class BoidManager : MonoBehaviour {
     }
     
     private void Start() {
-        Application.targetFrameRate = 60;
+        this.collisionAvoidanceToggle.isOn = this.CollisionAvoidance;
+        this.flockCenteringToggle.isOn = this.FlockCentering;
+        this.velocityMatchingToggle.isOn = this.VelocityMatching;
+        this.wrapAroundBoundingVolumeToggle.isOn = this.WrapAroundBoundingVolume;
+        
         this.bounds = this.boundingVolume.bounds;
         this.SpawnBoids();
     }
