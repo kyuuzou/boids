@@ -20,10 +20,10 @@ public class BoidManager : MonoBehaviour {
     private Transform boidPrefab;
 
     [SerializeField]
-    private float maximumVelocity = 0.25f;
+    private float maximumSpeed = 0.25f;
 
     [SerializeField]
-    private float minimumVelocity = 0.2f;
+    private float minimumSpeed = 0.2f;
 
     [SerializeField]
     private SpriteRenderer boundingVolume;
@@ -114,12 +114,12 @@ public class BoidManager : MonoBehaviour {
     }
     
     private void LimitSpeed(ref Boid boid) {
-        float magnitude = Mathf.Abs(boid.Velocity.magnitude);
-        
-        if (magnitude > this.maximumVelocity) {
-            boid.Velocity = boid.Velocity.normalized * this.maximumVelocity;
-        } else if (magnitude < this.minimumVelocity) {
-            boid.Velocity = boid.Velocity.normalized * this.minimumVelocity;
+        float speed = boid.Velocity.magnitude;
+
+        if (speed > this.maximumSpeed) {
+            boid.Velocity = (boid.Velocity / speed) * this.maximumSpeed;
+        } else if (speed < this.minimumSpeed) {
+            boid.Velocity = (boid.Velocity / speed) * this.minimumSpeed;
         }
     }
     
@@ -136,10 +136,11 @@ public class BoidManager : MonoBehaviour {
             Vector2 acceleration = (avoidance + matching + centering) * Time.deltaTime;
             
             if (!Mathf.Approximately(acceleration.magnitude, 0.0f)) {
-                boid.Velocity += Vector3.RotateTowards(boid.Velocity, acceleration, 5.0f, this.maximumVelocity);
+                boid.Velocity += Vector3.RotateTowards(boid.Velocity, acceleration, 5.0f, this.maximumSpeed);
                 boid.Velocity.z = 0.0f;
-                this.LimitSpeed(ref boid);
             }
+            
+            this.LimitSpeed(ref boid);
 
             boid.Position += boid.Velocity;
 
@@ -158,14 +159,14 @@ public class BoidManager : MonoBehaviour {
             Vector3 position = Random.insideUnitCircle * this.bounds.extents.x;
             Quaternion rotation = Quaternion.Euler(0.0f, 0.0f, Random.Range(0.0f, 360.0f));
             Transform transform = Object.Instantiate<Transform>(this.boidPrefab, position, rotation, this.boidParent);
-            
+
             Color randomYellowish = Random.ColorHSV(0.1f, 0.3f, 0.5f, 1.0f, 0.5f, 1.0f, 1.0f, 1.0f);
             transform.GetComponent<MeshRenderer>().material.color = randomYellowish;
 
             Boid boid = new Boid {
                 Position = transform.position,
                 Transform = transform,
-                Velocity = transform.up * this.maximumVelocity
+                Velocity = transform.up * Random.Range(this.minimumSpeed, this.maximumSpeed)
             };
             
             this.boids.Add(boid);
