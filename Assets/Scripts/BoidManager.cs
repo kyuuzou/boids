@@ -96,6 +96,30 @@ public class BoidManager : MonoBehaviour {
         perceivedCenter /= (perceivedBoids);
         return (perceivedCenter - boid.Position) / 50.0f;
     }
+
+    private Vector3 CalculateStayWithinBounds(ref Boid boid) {
+        if (this.WrapAroundBoundingVolume) {
+            return Vector3.zero;
+        }
+        
+        float aversion = 0.5f;
+        float margin = 20.0f;
+        Vector3 velocity = Vector3.zero;
+        
+        if (boid.Position.x < this.bounds.min.x + margin) {
+            velocity.x = aversion;
+        } else if (boid.Position.x > this.bounds.max.x - margin) {
+            velocity.x = -aversion;
+        } 
+
+        if (boid.Position.y < this.bounds.min.y + margin) {
+            velocity.y = aversion;
+        } else if (boid.Position.y > this.bounds.max.y - margin) {
+            velocity.y = -aversion;
+        } 
+
+        return velocity;
+    }
     
     private Vector3 CalculateVelocityMatching(ref Boid boid) {
         if (! this.VelocityMatching) {
@@ -138,7 +162,7 @@ public class BoidManager : MonoBehaviour {
     }
     
     private void MoveBoids() {
-        Vector3 avoidance, matching, centering;
+        Vector3 avoidance, matching, centering, stayWithinBounds;
 
         for (int i = 0; i < this.boids.Count; i ++) {
             Boid boid = boids[i];
@@ -146,8 +170,9 @@ public class BoidManager : MonoBehaviour {
             avoidance = this.CalculateCollisionAvoidance(ref boid);
             matching = this.CalculateVelocityMatching(ref boid);
             centering = this.CalculateFlockCentering(ref boid);
+            stayWithinBounds = this.CalculateStayWithinBounds(ref boid);
 
-            Vector2 acceleration = (avoidance + matching + centering) * Time.deltaTime;
+            Vector2 acceleration = (avoidance + matching + centering + stayWithinBounds) * Time.deltaTime;
             
             if (!Mathf.Approximately(acceleration.magnitude, 0.0f)) {
                 boid.Velocity += Vector3.RotateTowards(boid.Velocity, acceleration, 5.0f, this.maximumSpeed);
@@ -175,7 +200,8 @@ public class BoidManager : MonoBehaviour {
             Vector3 position = Random.insideUnitCircle * this.bounds.extents.x;
             Quaternion rotation = Quaternion.Euler(0.0f, 0.0f, Random.Range(0.0f, 360.0f));
             Transform transform = Object.Instantiate<Transform>(this.boidPrefab, position, rotation, this.boidParent);
-
+            transform.name = $"Boid {i}";
+            
             Color randomYellowish = Random.ColorHSV(0.1f, 0.3f, 0.5f, 1.0f, 0.5f, 1.0f, 1.0f, 1.0f);
             transform.GetComponent<MeshRenderer>().material.color = randomYellowish;
 
