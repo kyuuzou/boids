@@ -174,6 +174,7 @@ public class BoidManager : MonoBehaviour {
     }
     
     private void Start() {
+        Application.targetFrameRate = 60;
         this.bounds = this.boundingVolume.bounds;
         this.SpawnBoids();
     }
