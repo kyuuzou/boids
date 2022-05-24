@@ -1,15 +1,12 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using Object = UnityEngine.Object;
-using Random = UnityEngine.Random;
 
 public class BoidManager : MonoBehaviour {
 
-    public bool CollisionAvoidance { get; set; } = false;
-    public bool FlockCentering { get; set; } = false;
-    public bool VelocityMatching { get; set; } = false;
+    public bool CollisionAvoidance { get; set; }
+    public bool FlockCentering { get; set; }
+    public bool VelocityMatching { get; set; }
     public bool WrapAroundBoundingVolume { get; set; } = true;
 
     [Header("UI Toggles")]
@@ -48,40 +45,6 @@ public class BoidManager : MonoBehaviour {
     private List<Boid> boids;
     private Bounds bounds;
 
-    private struct Boid : IEquatable<Boid> {
-        public readonly int Identifier;
-        public readonly Transform Transform;
-        public Vector3 Position;
-        public Vector3 Velocity;
-
-        public Boid(int identifier, Transform transform, float speed) {
-            this.Identifier = identifier;
-            this.Transform = transform;
-            this.Position = transform.position;
-            this.Velocity = transform.up * speed;
-
-            Color randomYellowish = Random.ColorHSV(0.1f, 0.3f, 0.5f, 1.0f, 0.5f, 1.0f, 1.0f, 1.0f);
-            transform.GetComponent<MeshRenderer>().material.color = randomYellowish;
-            transform.name = $"Boid {identifier}";
-        }
-        
-        public static bool operator ==(Boid left, Boid right) => Equals(left, right);
-        public static bool operator !=(Boid left, Boid right) => !Equals(left, right);
-        
-        public bool Equals(Boid other) {
-            return this.Identifier == other.Identifier;
-
-        }
-        
-        public override bool Equals(object @object) {
-            return @object is Boid other && this.Equals(other);
-        }
-
-        public override int GetHashCode() {
-            return this.Identifier;
-        }
-    }
-    
     private Vector3 CalculateCollisionAvoidance(ref Boid boid) {
         if (! this.CollisionAvoidance) {
             return Vector3.zero;

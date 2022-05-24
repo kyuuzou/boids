@@ -1,14 +1,14 @@
 using UnityEditor;
 using UnityEngine;
  
-public class TriangleCreator {
+public static class TriangleCreator {
 
     [MenuItem("GameObject/2D Object/Triangle")]
     public static void Create() {
         TriangleCreator.CreateGameObject();
     }
 
-    private static GameObject CreateGameObject() {
+    private static void CreateGameObject() {
         GameObject triangle = new GameObject("Triangle");
         MeshFilter filter = triangle.AddComponent<MeshFilter>();
         MeshCollider collider = triangle.AddComponent<MeshCollider>();
@@ -23,8 +23,6 @@ public class TriangleCreator {
         AssetDatabase.CreateAsset(mesh, path);
         AssetDatabase.SaveAssets();        
         AssetDatabase.Refresh();
- 
-        return triangle;
     }
     
     private static Mesh CreateMesh() {
