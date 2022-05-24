@@ -1,6 +1,9 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Object = UnityEngine.Object;
+using Random = UnityEngine.Random;
 
 public class BoidManager : MonoBehaviour {
 
@@ -45,10 +48,38 @@ public class BoidManager : MonoBehaviour {
     private List<Boid> boids;
     private Bounds bounds;
 
-    private struct Boid {
-        public Transform Transform;
+    private struct Boid : IEquatable<Boid> {
+        public readonly int Identifier;
+        public readonly Transform Transform;
         public Vector3 Position;
         public Vector3 Velocity;
+
+        public Boid(int identifier, Transform transform, float speed) {
+            this.Identifier = identifier;
+            this.Transform = transform;
+            this.Position = transform.position;
+            this.Velocity = transform.up * speed;
+
+            Color randomYellowish = Random.ColorHSV(0.1f, 0.3f, 0.5f, 1.0f, 0.5f, 1.0f, 1.0f, 1.0f);
+            transform.GetComponent<MeshRenderer>().material.color = randomYellowish;
+            transform.name = $"Boid {identifier}";
+        }
+        
+        public static bool operator ==(Boid left, Boid right) => Equals(left, right);
+        public static bool operator !=(Boid left, Boid right) => !Equals(left, right);
+        
+        public bool Equals(Boid other) {
+            return this.Identifier == other.Identifier;
+
+        }
+        
+        public override bool Equals(object @object) {
+            return @object is Boid other && this.Equals(other);
+        }
+
+        public override int GetHashCode() {
+            return this.Identifier;
+        }
     }
     
     private Vector3 CalculateCollisionAvoidance(ref Boid boid) {
@@ -59,7 +90,7 @@ public class BoidManager : MonoBehaviour {
         Vector3 close = Vector3.zero;
 
         foreach (Boid otherBoid in this.boids) {
-            if (boid.Transform == otherBoid.Transform) {
+            if (boid == otherBoid) {
                 continue;
             }
 
@@ -81,7 +112,7 @@ public class BoidManager : MonoBehaviour {
 
         // TODO: this will not scale, needs to take into account only the closest neighbours (maybe a quadtree)
         foreach (Boid otherBoid in this.boids) {
-            if (boid.Transform == otherBoid.Transform || !IsWithinVisibleDistance(boid, otherBoid)) {
+            if (boid == otherBoid || !IsWithinVisibleDistance(boid, otherBoid)) {
                 continue;
             }
             
@@ -130,7 +161,7 @@ public class BoidManager : MonoBehaviour {
         int perceivedBoids = 0;
 
         foreach (Boid otherBoid in this.boids) {
-            if (boid.Transform == otherBoid.Transform || ! this.IsWithinVisibleDistance(boid, otherBoid)) {
+            if (boid == otherBoid || ! this.IsWithinVisibleDistance(boid, otherBoid)) {
                 continue;
             }
 
@@ -200,17 +231,9 @@ public class BoidManager : MonoBehaviour {
             Vector3 position = Random.insideUnitCircle * this.bounds.extents.x;
             Quaternion rotation = Quaternion.Euler(0.0f, 0.0f, Random.Range(0.0f, 360.0f));
             Transform transform = Object.Instantiate<Transform>(this.boidPrefab, position, rotation, this.boidParent);
-            transform.name = $"Boid {i}";
+            float speed = Random.Range(this.minimumSpeed, this.maximumSpeed); 
             
-            Color randomYellowish = Random.ColorHSV(0.1f, 0.3f, 0.5f, 1.0f, 0.5f, 1.0f, 1.0f, 1.0f);
-            transform.GetComponent<MeshRenderer>().material.color = randomYellowish;
-
-            Boid boid = new Boid {
-                Position = transform.position,
-                Transform = transform,
-                Velocity = transform.up * Random.Range(this.minimumSpeed, this.maximumSpeed)
-            };
-            
+            Boid boid = new Boid(i, transform, speed);
             this.boids.Add(boid);
         }
     }
