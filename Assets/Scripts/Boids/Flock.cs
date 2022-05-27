@@ -2,26 +2,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class BoidManager : MonoBehaviour {
+public class Flock : MonoBehaviour {
 
-    public bool CollisionAvoidance { get; set; }
-    public bool FlockCentering { get; set; }
-    public bool VelocityMatching { get; set; }
-    public bool WrapAroundBoundingVolume { get; set; } = true;
-
-    [Header("UI Toggles")]
-    [SerializeField]
-    private Toggle collisionAvoidanceToggle;
-    
-    [SerializeField]
-    private Toggle flockCenteringToggle;
-    
-    [SerializeField]
-    private Toggle velocityMatchingToggle;
-    
-    [SerializeField]
-    private Toggle wrapAroundBoundingVolumeToggle;
-    
     [Header("Boid settings")]
     [SerializeField]
     private int totalBoids = 100;
@@ -41,12 +23,15 @@ public class BoidManager : MonoBehaviour {
     [Header("Other")]
     [SerializeField]
     private SpriteRenderer boundingVolume;
+
+    [SerializeField]
+    private Settings settings;
     
     private List<Boid> boids;
     private Bounds bounds;
 
     private Vector3 CalculateCollisionAvoidance(ref Boid boid) {
-        if (! this.CollisionAvoidance) {
+        if (! this.settings.CollisionAvoidance) {
             return Vector3.zero;
         }
 
@@ -66,7 +51,7 @@ public class BoidManager : MonoBehaviour {
     }
     
     private Vector3 CalculateFlockCentering(ref Boid boid) {
-        if (! this.FlockCentering) {
+        if (! this.settings.FlockCentering) {
             return Vector3.zero;
         }
 
@@ -92,7 +77,7 @@ public class BoidManager : MonoBehaviour {
     }
 
     private Vector3 CalculateStayWithinBounds(ref Boid boid) {
-        if (this.WrapAroundBoundingVolume) {
+        if (this.settings.WrapAroundBoundingVolume) {
             return Vector3.zero;
         }
         
@@ -116,7 +101,7 @@ public class BoidManager : MonoBehaviour {
     }
     
     private Vector3 CalculateVelocityMatching(ref Boid boid) {
-        if (! this.VelocityMatching) {
+        if (! this.settings.VelocityMatching) {
             return Vector3.zero;
         }
 
@@ -177,7 +162,7 @@ public class BoidManager : MonoBehaviour {
 
             boid.Position += boid.Velocity;
 
-            if (this.WrapAroundBoundingVolume) {
+            if (this.settings.WrapAroundBoundingVolume) {
                 this.WrapAroundBounds(ref boid);
             }
 
@@ -202,11 +187,6 @@ public class BoidManager : MonoBehaviour {
     }
     
     private void Start() {
-        this.collisionAvoidanceToggle.isOn = this.CollisionAvoidance;
-        this.flockCenteringToggle.isOn = this.FlockCentering;
-        this.velocityMatchingToggle.isOn = this.VelocityMatching;
-        this.wrapAroundBoundingVolumeToggle.isOn = this.WrapAroundBoundingVolume;
-        
         this.bounds = this.boundingVolume.bounds;
         this.SpawnBoids();
     }

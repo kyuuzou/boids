@@ -434,7 +434,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &628691773
 GameObject:
@@ -644,8 +644,8 @@ MonoBehaviour:
   onValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 903241175}
-        m_TargetAssemblyTypeName: BoidManager, Assembly-CSharp
+      - m_Target: {fileID: 11400000, guid: 41547707629504a3e91d09724a7ffd88, type: 2}
+        m_TargetAssemblyTypeName: Settings, Assembly-CSharp
         m_MethodName: set_FlockCentering
         m_Mode: 0
         m_Arguments:
@@ -686,7 +686,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &903241173
 GameObject:
@@ -699,7 +699,7 @@ GameObject:
   - component: {fileID: 903241174}
   - component: {fileID: 903241175}
   m_Layer: 0
-  m_Name: Boid Manager
+  m_Name: Flock
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -718,7 +718,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &903241175
 MonoBehaviour:
@@ -732,16 +732,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a37b4ec2cebf742e4a50bd6d5dbf62b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  collisionAvoidanceToggle: {fileID: 2089533056}
-  flockCenteringToggle: {fileID: 800842008}
-  velocityMatchingToggle: {fileID: 1673418350}
-  wrapAroundBoundingVolumeToggle: {fileID: 1941288544}
   totalBoids: 100
   boidParent: {fileID: 882096845}
   boidPrefab: {fileID: 2266453357283842564, guid: 51c8ee4dbcd644075a82e2a8c427affd, type: 3}
   maximumSpeed: 0.25
   minimumSpeed: 0.2
   boundingVolume: {fileID: 1863691737}
+  settings: {fileID: 11400000, guid: 41547707629504a3e91d09724a7ffd88, type: 2}
 --- !u!1 &1133943554
 GameObject:
   m_ObjectHideFlags: 0
@@ -1222,8 +1219,8 @@ MonoBehaviour:
   onValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 903241175}
-        m_TargetAssemblyTypeName: BoidManager, Assembly-CSharp
+      - m_Target: {fileID: 11400000, guid: 41547707629504a3e91d09724a7ffd88, type: 2}
+        m_TargetAssemblyTypeName: Settings, Assembly-CSharp
         m_MethodName: set_VelocityMatching
         m_Mode: 0
         m_Arguments:
@@ -1550,7 +1547,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1910398793
 GameObject:
@@ -1564,8 +1561,9 @@ GameObject:
   - component: {fileID: 1910398796}
   - component: {fileID: 1910398795}
   - component: {fileID: 1910398794}
+  - component: {fileID: 1910398798}
   m_Layer: 5
-  m_Name: Canvas
+  m_Name: UI Manager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1649,13 +1647,30 @@ RectTransform:
   - {fileID: 1673418349}
   - {fileID: 1941288543}
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &1910398798
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1910398793}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 384f8a47379e048408ee5b567b906ea0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  collisionAvoidanceToggle: {fileID: 2089533056}
+  flockCenteringToggle: {fileID: 800842008}
+  velocityMatchingToggle: {fileID: 1673418350}
+  wrapAroundBoundingVolumeToggle: {fileID: 1941288544}
+  settings: {fileID: 11400000, guid: 41547707629504a3e91d09724a7ffd88, type: 2}
 --- !u!1 &1941288542
 GameObject:
   m_ObjectHideFlags: 0
@@ -1742,8 +1757,8 @@ MonoBehaviour:
   onValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 903241175}
-        m_TargetAssemblyTypeName: BoidManager, Assembly-CSharp
+      - m_Target: {fileID: 11400000, guid: 41547707629504a3e91d09724a7ffd88, type: 2}
+        m_TargetAssemblyTypeName: Settings, Assembly-CSharp
         m_MethodName: set_WrapAroundBoundingVolume
         m_Mode: 0
         m_Arguments:
@@ -1820,7 +1835,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2089533054
 GameObject:
@@ -1908,8 +1923,8 @@ MonoBehaviour:
   onValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 903241175}
-        m_TargetAssemblyTypeName: BoidManager, Assembly-CSharp
+      - m_Target: {fileID: 11400000, guid: 41547707629504a3e91d09724a7ffd88, type: 2}
+        m_TargetAssemblyTypeName: Settings, Assembly-CSharp
         m_MethodName: set_CollisionAvoidance
         m_Mode: 0
         m_Arguments:
