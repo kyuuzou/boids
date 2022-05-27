@@ -1,160 +1,67 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
+using UnityEditorInternal;
 
 public class Flock : MonoBehaviour {
 
-    [Header("Boid settings")]
+    [Header("Behaviours")]
     [SerializeField]
-    private int totalBoids = 100;
+    private List<BehaviourBase> behaviours;
+    
+    [Header("Settings")]
+    [SerializeField]
+    private Settings settings;
 
+    [Header("Structure")]
     [SerializeField]
     private Transform boidParent;
     
     [SerializeField]
     private Transform boidPrefab;
-
-    [SerializeField]
-    private float maximumSpeed = 0.25f;
-
-    [SerializeField]
-    private float minimumSpeed = 0.2f;
-
-    [Header("Other")]
-    [SerializeField]
-    private SpriteRenderer boundingVolume;
-
-    [SerializeField]
-    private Settings settings;
     
     private List<Boid> boids;
-    private Bounds bounds;
-
-    private Vector3 CalculateCollisionAvoidance(ref Boid boid) {
-        if (! this.settings.CollisionAvoidance) {
-            return Vector3.zero;
-        }
-
-        Vector3 close = Vector3.zero;
-
-        foreach (Boid otherBoid in this.boids) {
-            if (boid == otherBoid) {
-                continue;
-            }
-
-            if (Vector2.Distance(boid.Position, otherBoid.Position) < 3.0f) {
-                close += boid.Position -otherBoid.Position;
-            }
-        }
-
-        return close;
-    }
-    
-    private Vector3 CalculateFlockCentering(ref Boid boid) {
-        if (! this.settings.FlockCentering) {
-            return Vector3.zero;
-        }
-
-        Vector3 perceivedCenter = Vector3.zero;
-        int perceivedBoids = 0;
-
-        // TODO: this will not scale, needs to take into account only the closest neighbours (maybe a quadtree)
-        foreach (Boid otherBoid in this.boids) {
-            if (boid == otherBoid || !IsWithinVisibleDistance(boid, otherBoid)) {
-                continue;
-            }
-            
-            perceivedCenter += otherBoid.Position;
-            perceivedBoids ++;
-        }
-
-        if (perceivedBoids == 0) {
-            return Vector3.zero;
-        }
-        
-        perceivedCenter /= (perceivedBoids);
-        return (perceivedCenter - boid.Position) / 50.0f;
-    }
-
-    private Vector3 CalculateStayWithinBounds(ref Boid boid) {
-        if (this.settings.WrapAroundBoundingVolume) {
-            return Vector3.zero;
-        }
-        
-        float aversion = 0.5f;
-        float margin = 20.0f;
-        Vector3 velocity = Vector3.zero;
-        
-        if (boid.Position.x < this.bounds.min.x + margin) {
-            velocity.x = aversion;
-        } else if (boid.Position.x > this.bounds.max.x - margin) {
-            velocity.x = -aversion;
-        } 
-
-        if (boid.Position.y < this.bounds.min.y + margin) {
-            velocity.y = aversion;
-        } else if (boid.Position.y > this.bounds.max.y - margin) {
-            velocity.y = -aversion;
-        } 
-
-        return velocity;
-    }
-    
-    private Vector3 CalculateVelocityMatching(ref Boid boid) {
-        if (! this.settings.VelocityMatching) {
-            return Vector3.zero;
-        }
-
-        Vector3 velocityAverage = Vector3.zero;
-        int perceivedBoids = 0;
-
-        foreach (Boid otherBoid in this.boids) {
-            if (boid == otherBoid || ! this.IsWithinVisibleDistance(boid, otherBoid)) {
-                continue;
-            }
-
-            velocityAverage += otherBoid.Velocity;
-            perceivedBoids ++;
-        }
-
-        if (perceivedBoids == 0) {
-            return Vector3.zero;
-        }
-        
-        velocityAverage /= perceivedBoids;
-        
-        return velocityAverage - boid.Velocity;
-    }
-
-    private bool IsWithinVisibleDistance(Boid boid, Boid otherBoid) {
-        return Vector2.Distance(boid.Position, otherBoid.Position) < 10.0f;
-    }
     
     private void LimitSpeed(ref Boid boid) {
         float speed = boid.Velocity.magnitude;
 
-        if (speed > this.maximumSpeed) {
-            boid.Velocity = (boid.Velocity / speed) * this.maximumSpeed;
-        } else if (speed < this.minimumSpeed) {
-            boid.Velocity = (boid.Velocity / speed) * this.minimumSpeed;
+        if (speed > this.settings.MaximumSpeed) {
+            boid.Velocity = (boid.Velocity / speed) * this.settings.MaximumSpeed;
+        } else if (speed < this.settings.MinimumSpeed) {
+            boid.Velocity = (boid.Velocity / speed) * this.settings.MinimumSpeed;
         }
     }
     
-    private void MoveBoids() {
-        Vector3 avoidance, matching, centering, stayWithinBounds;
+    private void SpawnBoids() {
+        this.boids = new List<Boid>();
+        
+        for (int i = 0; i < this.settings.TotalBoids; i++) {
+            Vector3 position = Random.insideUnitCircle * this.settings.Bounds.extents.x;
+            Quaternion rotation = Quaternion.Euler(0.0f, 0.0f, Random.Range(0.0f, 360.0f));
+            Transform transform = Object.Instantiate<Transform>(this.boidPrefab, position, rotation, this.boidParent);
+            float speed = Random.Range(this.settings.MinimumSpeed, this.settings.MaximumSpeed); 
+            
+            Boid boid = new Boid(i, transform, speed);
+            this.boids.Add(boid);
+        }
+    }
+    
+    private void Start() {
+        this.SpawnBoids();
+    }
 
+    private void Update() {
         for (int i = 0; i < this.boids.Count; i ++) {
             Boid boid = boids[i];
+            Vector2 acceleration = Vector2.zero;
             
-            avoidance = this.CalculateCollisionAvoidance(ref boid);
-            matching = this.CalculateVelocityMatching(ref boid);
-            centering = this.CalculateFlockCentering(ref boid);
-            stayWithinBounds = this.CalculateStayWithinBounds(ref boid);
+            foreach (BehaviourBase behaviour in this.behaviours) {
+                acceleration += behaviour.CalculateVelocity(ref boid, this.boids);
+            }
 
-            Vector2 acceleration = (avoidance + matching + centering + stayWithinBounds) * Time.deltaTime;
+            acceleration *= Time.deltaTime;
             
             if (!Mathf.Approximately(acceleration.magnitude, 0.0f)) {
-                boid.Velocity += Vector3.RotateTowards(boid.Velocity, acceleration, 5.0f, this.maximumSpeed);
+                boid.Velocity += Vector3.RotateTowards(boid.Velocity, acceleration, 5.0f, this.settings.MaximumSpeed);
                 boid.Velocity.z = 0.0f;
             }
             
@@ -170,41 +77,18 @@ public class Flock : MonoBehaviour {
             boid.Transform.up = boid.Velocity.normalized;
             boids[i] = boid;
         }
-    }
-    
-    private void SpawnBoids() {
-        this.boids = new List<Boid>();
-        
-        for (int i = 0; i < this.totalBoids; i++) {
-            Vector3 position = Random.insideUnitCircle * this.bounds.extents.x;
-            Quaternion rotation = Quaternion.Euler(0.0f, 0.0f, Random.Range(0.0f, 360.0f));
-            Transform transform = Object.Instantiate<Transform>(this.boidPrefab, position, rotation, this.boidParent);
-            float speed = Random.Range(this.minimumSpeed, this.maximumSpeed); 
-            
-            Boid boid = new Boid(i, transform, speed);
-            this.boids.Add(boid);
-        }
-    }
-    
-    private void Start() {
-        this.bounds = this.boundingVolume.bounds;
-        this.SpawnBoids();
-    }
-
-    private void Update() {
-        this.MoveBoids();
-    }
+    }    
 
     private void WrapAroundBounds(ref Boid boid) {
-        if (! this.bounds.Contains(boid.Position)) {
+        if (! this.settings.Bounds.Contains(boid.Position)) {
             Vector3 position = boid.Position;
 
-            if (position.x < this.bounds.min.x || position.x > this.bounds.max.x) {
-                position.x = (this.bounds.extents.x - 0.01f) * Mathf.Sign(position.x) * -1.0f;
+            if (position.x < this.settings.Bounds.min.x || position.x > this.settings.Bounds.max.x) {
+                position.x = (this.settings.Bounds.extents.x - 0.01f) * Mathf.Sign(position.x) * -1.0f;
             }
 
-            if (position.y < this.bounds.min.y || position.y > this.bounds.max.y) {
-                position.y = (this.bounds.extents.y - 0.01f) * Mathf.Sign(position.y) * -1.0f;
+            if (position.y < this.settings.Bounds.min.y || position.y > this.settings.Bounds.max.y) {
+                position.y = (this.settings.Bounds.extents.y - 0.01f) * Mathf.Sign(position.y) * -1.0f;
             }
 
             boid.Position = position;

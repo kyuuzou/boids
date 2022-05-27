@@ -22,7 +22,11 @@ public struct Boid : IEquatable<Boid> {
         
     public static bool operator ==(Boid left, Boid right) => Equals(left, right);
     public static bool operator !=(Boid left, Boid right) => !Equals(left, right);
-        
+
+    public bool CanSee(Boid boid) {
+        return Vector2.Distance(boid.Position, boid.Position) < 10.0f;
+    }
+    
     public bool Equals(Boid other) {
         return this.Identifier == other.Identifier;
 
