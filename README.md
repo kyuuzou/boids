@@ -29,23 +29,12 @@ An experiment with boids in Unity.
 
 Mostly because I wanted to play around with Boids! I keep seeing all of these implementations with all kinds of cool techniques, and finally decided to give it a go myself. The intention of this project is as follows:  
 
-- **Milestone 1:**  
- Implement the three core steering behaviours for Simulated Flocks, as per Craig Reynold's original 1987's [Flocks, Herds, and Schools: A Distributed Behavioral Model](https://www.red3d.com/cwr/boids/)
-
-- **Milestone 2:**  
- Implement remaining behaviours described in the model, such as Simulated Perception, Scripted Flocking and Environmental Obstacle Avoidance
-
-- **Milestone 3:**  
- Optimise collision detection with dynamic spatial partitioning or equivalent technique, for maximum possible supported number of boids
-
-- **Milestone 4:**  
- Switch between 2D and 3D.
-
-- **Milestone 5:**  
- Implement additional interesting behaviours, such as perching, hunger and predators.
-
-- **Milestone 6:**  
- Move to a multiplayer paradigm where each boid runs its own instance, introducing new interesting variables to the problem, like latency, prediction and rollbacks.
+- [x] Implement the three core steering behaviours for Simulated Flocks, as per Craig Reynold's original 1987's [Flocks, Herds, and Schools: A Distributed Behavioral Model](https://www.red3d.com/cwr/boids/).
+- [ ] Implement remaining behaviours described in the model, such as Simulated Perception, Scripted Flocking and Environmental Obstacle Avoidance.
+- [ ] Optimise collision detection with dynamic spatial partitioning or equivalent technique, for maximum possible supported number of boids.
+- [ ] Switch between 2D and 3D.
+- [ ] Implement additional interesting behaviours, such as perching, hunger and predators.
+- [ ] Move to a multiplayer paradigm where each boid runs its own instance, introducing new interesting variables to the problem, like latency, prediction and rollbacks.
 
 Whether the project ever actually sees all of this happen is a different story, but in the end, even a partial journey is more exciting than no journey at all. Let's see how far it gets!
 
