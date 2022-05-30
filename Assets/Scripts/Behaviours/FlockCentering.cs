@@ -3,8 +3,14 @@ using UnityEngine;
 
 public class FlockCentering : BehaviourBase {
     
+    [field: SerializeField]
+    public float Attraction { get; set; } = 0.02f;
+
+    [field: SerializeField]
+    public float Weight { get; set; } = 1.0f;
+
     public override Vector2 CalculateVelocity(ref Boid boid, List<Boid> neighbours) {
-        if (! this.Settings.FlockCentering) {
+        if (Mathf.Approximately(this.Weight, 0.0f)) {
             return Vector3.zero;
         }
 
@@ -25,6 +31,7 @@ public class FlockCentering : BehaviourBase {
         }
         
         perceivedCenter /= (perceivedBoids);
-        return (perceivedCenter - boid.Position) / 50.0f;
+        
+        return (perceivedCenter - boid.Position) * this.Attraction * this.Weight;
     }
 }

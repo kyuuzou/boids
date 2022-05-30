@@ -81,14 +81,19 @@ public class Flock : MonoBehaviour {
 
     private void WrapAroundBounds(ref Boid boid) {
         if (! this.settings.Bounds.Contains(boid.Position)) {
+            Bounds bounds = this.settings.Bounds;
             Vector3 position = boid.Position;
 
-            if (position.x < this.settings.Bounds.min.x || position.x > this.settings.Bounds.max.x) {
-                position.x = (this.settings.Bounds.extents.x - 0.01f) * Mathf.Sign(position.x) * -1.0f;
+            if (position.x < bounds.min.x || position.x > bounds.max.x) {
+                position.x -= bounds.center.x;
+                position.x = (bounds.extents.x - 0.025f) * Mathf.Sign(position.x) * -1.0f;
+                position.x += bounds.center.x;
             }
 
-            if (position.y < this.settings.Bounds.min.y || position.y > this.settings.Bounds.max.y) {
-                position.y = (this.settings.Bounds.extents.y - 0.01f) * Mathf.Sign(position.y) * -1.0f;
+            if (position.y < bounds.min.y || position.y > bounds.max.y) {
+                position.y -= bounds.center.y;
+                position.y = (bounds.extents.y - 0.025f) * Mathf.Sign(position.y) * -1.0f;
+                position.y += bounds.center.y;
             }
 
             boid.Position = position;

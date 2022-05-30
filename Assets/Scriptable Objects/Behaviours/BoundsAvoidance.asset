@@ -13,3 +13,6 @@ MonoBehaviour:
   m_Name: BoundsAvoidance
   m_EditorClassIdentifier: 
   <Settings>k__BackingField: {fileID: 11400000, guid: 41547707629504a3e91d09724a7ffd88, type: 2}
+  <Aversion>k__BackingField: 0.5064287
+  <Margin>k__BackingField: 25.714287
+  <Weight>k__BackingField: 0

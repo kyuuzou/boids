@@ -3,8 +3,11 @@ using UnityEngine;
 
 public class VelocityMatching : BehaviourBase {
     
+    [field: SerializeField]
+    public float Weight { get; set; } = 1.0f;
+
     public override Vector2 CalculateVelocity(ref Boid boid, List<Boid> neighbours) {
-        if (! this.Settings.VelocityMatching) {
+        if (Mathf.Approximately(this.Weight, 0.0f)) {
             return Vector3.zero;
         }
 
@@ -26,6 +29,6 @@ public class VelocityMatching : BehaviourBase {
         
         velocityAverage /= perceivedBoids;
         
-        return velocityAverage - boid.Velocity;
+        return (velocityAverage - boid.Velocity) * this.Weight;
     }
 }
