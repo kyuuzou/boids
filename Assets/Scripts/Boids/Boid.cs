@@ -15,7 +15,7 @@ public struct Boid : IEquatable<Boid> {
         this.Position = transform.position;
         this.Velocity = transform.up * speed;
 
-        Color randomYellowish = Random.ColorHSV(0.1f, 0.3f, 0.5f, 1.0f, 0.5f, 1.0f, 1.0f, 1.0f);
+        Color randomYellowish = Random.ColorHSV(0.14f, 0.17f, 0.5f, 1.0f, 0.5f, 1.0f, 1.0f, 1.0f);
         transform.GetComponent<MeshRenderer>().material.color = randomYellowish;
         transform.name = $"Boid {identifier}";
     }
@@ -29,7 +29,6 @@ public struct Boid : IEquatable<Boid> {
     
     public bool Equals(Boid other) {
         return this.Identifier == other.Identifier;
-
     }
         
     public override bool Equals(object obj) {
