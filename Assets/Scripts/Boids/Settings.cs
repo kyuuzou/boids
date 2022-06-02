@@ -14,7 +14,10 @@ public class Settings : ScriptableObject  {
     
     [field: Header("World")]
     [field: SerializeField]
+    public bool TestSubject { get; set; }
+
+    [field: SerializeField]
     public bool WrapAroundBoundingVolume { get; set; }
-    
+
     public Bounds Bounds { get; set; }
 }

@@ -51,6 +51,9 @@ public class UIManager : MonoBehaviour {
     private Settings settings;
 
     [SerializeField]
+    private Toggle testSubject;
+    
+    [SerializeField]
     private Toggle wrapAroundBoundingVolume;
 
     private void Start() {
@@ -67,6 +70,7 @@ public class UIManager : MonoBehaviour {
         this.velocityMatchingWeight.value = this.velocityMatching.Weight;
 
         this.settings.Bounds = this.boundingVolume.bounds;
+        this.testSubject.isOn = this.settings.TestSubject;
         this.wrapAroundBoundingVolume.isOn = this.settings.WrapAroundBoundingVolume;
         
         this.boundingVolume.enabled = false;

@@ -6,6 +6,7 @@ using Random = UnityEngine.Random;
 public struct Boid : IEquatable<Boid> {
     public readonly int Identifier;
     public readonly Transform Transform;
+    public Vector3 Acceleration;
     public Vector3 Position;
     public Vector3 Velocity;
 
@@ -14,9 +15,11 @@ public struct Boid : IEquatable<Boid> {
         this.Transform = transform;
         this.Position = transform.position;
         this.Velocity = transform.up * speed;
+        this.Acceleration = Vector3.zero;
 
         Color randomYellowish = Random.ColorHSV(0.14f, 0.17f, 0.5f, 1.0f, 0.5f, 1.0f, 1.0f, 1.0f);
-        transform.GetComponent<MeshRenderer>().material.color = randomYellowish;
+        this.SetColor(randomYellowish);
+
         transform.name = $"Boid {identifier}";
     }
         
@@ -37,5 +40,9 @@ public struct Boid : IEquatable<Boid> {
 
     public override int GetHashCode() {
         return this.Identifier;
+    }
+
+    public void SetColor(Color color) {
+        this.Transform.GetComponent<MeshRenderer>().material.color = color;
     }
 }

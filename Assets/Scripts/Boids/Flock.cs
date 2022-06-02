@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEditorInternal;
 
+[RequireComponent(typeof(TestSubjectDecorator))]
 public class Flock : MonoBehaviour {
 
     [Header("Behaviours")]
@@ -20,6 +20,7 @@ public class Flock : MonoBehaviour {
     private Transform boidPrefab;
     
     private List<Boid> boids;
+    private TestSubjectDecorator testSubjectDecorator;
     
     private void LimitSpeed(ref Boid boid) {
         float speed = boid.Velocity.magnitude;
@@ -46,6 +47,7 @@ public class Flock : MonoBehaviour {
     }
     
     private void Start() {
+        this.testSubjectDecorator = this.GetComponent<TestSubjectDecorator>();
         this.SpawnBoids();
     }
 
@@ -59,6 +61,7 @@ public class Flock : MonoBehaviour {
             }
 
             acceleration *= Time.deltaTime;
+            boid.Acceleration = acceleration;
             
             if (!Mathf.Approximately(acceleration.magnitude, 0.0f)) {
                 boid.Velocity += Vector3.RotateTowards(boid.Velocity, acceleration, 5.0f, this.settings.MaximumSpeed);
@@ -76,6 +79,10 @@ public class Flock : MonoBehaviour {
             boid.Transform.position = boid.Position;
             boid.Transform.up = boid.Velocity.normalized;
             boids[i] = boid;
+        }
+
+        if (this.settings.TestSubject) {
+            this.testSubjectDecorator.Decorate(this.boids[0]);
         }
     }    
 
