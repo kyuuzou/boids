@@ -40,6 +40,9 @@ Whether the project ever actually sees all of this happen is a different story, 
 
 ## Version History
 
+* *0.1.0*
+    * Most settings are now configurable.
+    * Added Test Subject mode, to be able to follow a specific boid's decision-making process.
 * *0.0.1*
     * Quick and dirty implementation of Collision Avoidance, Velocity Matching and Flock Centering.
     * Ability to toggle between wrapping around a bounding volume or staying within bounds.
