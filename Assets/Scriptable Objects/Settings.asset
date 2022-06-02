@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 17d6a734466b8440baecde405519e480, type: 3}
   m_Name: Settings
   m_EditorClassIdentifier: 
-  <CollisionAvoidance>k__BackingField: 1
-  <FlockCentering>k__BackingField: 1
-  <VelocityMatching>k__BackingField: 1
-  <WrapAroundBoundingVolume>k__BackingField: 0
-  boundingVolume: {fileID: 7750393462520356621, guid: a6821fc29ee57497291d35f62d4b14a8, type: 3}
+  <TotalBoids>k__BackingField: 100
+  <MaximumSpeed>k__BackingField: 0.25
+  <MinimumSpeed>k__BackingField: 0.2
+  <TestSubject>k__BackingField: 0
+  <WrapAroundBoundingVolume>k__BackingField: 1
