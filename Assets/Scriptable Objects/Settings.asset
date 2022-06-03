@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Settings
   m_EditorClassIdentifier: 
   <TotalBoids>k__BackingField: 100
-  <MaximumSpeed>k__BackingField: 0.25
+  <MaximumSpeed>k__BackingField: 0.4
   <MinimumSpeed>k__BackingField: 0.2
   <TestSubject>k__BackingField: 0
   <WrapAroundBoundingVolume>k__BackingField: 1

@@ -19,9 +19,9 @@ public class Flock : MonoBehaviour {
     [SerializeField]
     private Transform boidPrefab;
     
-    private List<Boid> boids;
+    private List<Boid> boids = new List<Boid>();
     private TestSubjectDecorator testSubjectDecorator;
-    
+ 
     private void LimitSpeed(ref Boid boid) {
         float speed = boid.Velocity.magnitude;
 
@@ -32,28 +32,42 @@ public class Flock : MonoBehaviour {
         }
     }
     
-    private void SpawnBoids() {
-        this.boids = new List<Boid>();
+    private void OnTotalBoidsChanged(int newTotal) {
+        int currentTotal = this.boids.Count;
         
-        for (int i = 0; i < this.settings.TotalBoids; i++) {
+        if (newTotal > currentTotal) {
+            this.SpawnBoids(newTotal - currentTotal);
+        } else if (newTotal < currentTotal) {
+            for (int i = newTotal; i < currentTotal; i++) {
+                Object.Destroy(this.boids[i].Transform.gameObject);
+            }
+            
+            this.boids.RemoveRange(newTotal, currentTotal - newTotal);
+        }
+    }
+
+    private void SpawnBoids(int total) {
+        for (int i = 0; i < total; i++) {
             Vector3 position = Random.insideUnitCircle * this.settings.Bounds.extents.x;
             Quaternion rotation = Quaternion.Euler(0.0f, 0.0f, Random.Range(0.0f, 360.0f));
             Transform transform = Object.Instantiate<Transform>(this.boidPrefab, position, rotation, this.boidParent);
             float speed = Random.Range(this.settings.MinimumSpeed, this.settings.MaximumSpeed); 
             
-            Boid boid = new Boid(i, transform, speed);
+            Boid boid = new Boid(transform, speed);
             this.boids.Add(boid);
         }
     }
     
     private void Start() {
         this.testSubjectDecorator = this.GetComponent<TestSubjectDecorator>();
-        this.SpawnBoids();
+        this.SpawnBoids(this.settings.TotalBoids);
+        
+        this.settings.TotalBoidsChanged += this.OnTotalBoidsChanged;
     }
 
     private void Update() {
         for (int i = 0; i < this.boids.Count; i ++) {
-            Boid boid = boids[i];
+            Boid boid = this.boids[i];
             Vector2 acceleration = Vector2.zero;
             
             foreach (BehaviourBase behaviour in this.behaviours) {

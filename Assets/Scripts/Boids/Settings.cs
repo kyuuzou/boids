@@ -1,16 +1,27 @@
 using UnityEngine;
 
-public class Settings : ScriptableObject  {
-    
+public delegate void TotalBoidsChangedHandler(int boids);
+
+public class Settings : ScriptableObject {
+
     [field: Header("Boids")]
+    private int totalBoids = 100;
+    public int TotalBoids {
+        get => this.totalBoids;
+        set {
+            this.totalBoids = value;
+            this.TotalBoidsChanged?.Invoke(value);
+        }
+    }
+
+    public float TotalBoidsFloat { get => this.TotalBoids; set => this.TotalBoids = (int) value; }
+    public event TotalBoidsChangedHandler TotalBoidsChanged;
+    
     [field: SerializeField]
-    public int TotalBoids { get; private set; } = 100;
+    public float MaximumSpeed { get; set; } = 0.25f;
 
     [field: SerializeField]
-    public float MaximumSpeed { get; private set; } = 0.25f;
-
-    [field: SerializeField]
-    public float MinimumSpeed { get; private set; } = 0.2f;
+    public float MinimumSpeed { get; set; } = 0.2f;
     
     [field: Header("World")]
     [field: SerializeField]

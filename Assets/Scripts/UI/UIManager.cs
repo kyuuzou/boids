@@ -46,12 +46,21 @@ public class UIManager : MonoBehaviour {
     [Header("Settings")]
     [SerializeField]
     private SpriteRenderer boundingVolume;
-    
+
+    [SerializeField]
+    private Slider maximumSpeed;
+
+    [SerializeField]
+    private Slider minimumSpeed;
+
     [SerializeField]
     private Settings settings;
 
     [SerializeField]
     private Toggle testSubject;
+    
+    [SerializeField]
+    private Slider totalBoids;
     
     [SerializeField]
     private Toggle wrapAroundBoundingVolume;
@@ -70,7 +79,10 @@ public class UIManager : MonoBehaviour {
         this.velocityMatchingWeight.value = this.velocityMatching.Weight;
 
         this.settings.Bounds = this.boundingVolume.bounds;
+        this.minimumSpeed.value = this.settings.MinimumSpeed;
+        this.maximumSpeed.value = this.settings.MaximumSpeed;
         this.testSubject.isOn = this.settings.TestSubject;
+        this.totalBoids.value = this.settings.TotalBoidsFloat;
         this.wrapAroundBoundingVolume.isOn = this.settings.WrapAroundBoundingVolume;
         
         this.boundingVolume.enabled = false;

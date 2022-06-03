@@ -10,8 +10,12 @@ public struct Boid : IEquatable<Boid> {
     public Vector3 Position;
     public Vector3 Velocity;
 
-    public Boid(int identifier, Transform transform, float speed) {
-        this.Identifier = identifier;
+    private static int LastIdentifier = 0;
+    
+    public Boid(Transform transform, float speed) {
+        Boid.LastIdentifier++;
+        
+        this.Identifier = Boid.LastIdentifier;
         this.Transform = transform;
         this.Position = transform.position;
         this.Velocity = transform.up * speed;
@@ -20,7 +24,7 @@ public struct Boid : IEquatable<Boid> {
         Color randomYellowish = Random.ColorHSV(0.14f, 0.17f, 0.5f, 1.0f, 0.5f, 1.0f, 1.0f, 1.0f);
         this.SetColor(randomYellowish);
 
-        transform.name = $"Boid {identifier}";
+        transform.name = $"Boid {Boid.LastIdentifier}";
     }
         
     public static bool operator ==(Boid left, Boid right) => Equals(left, right);
