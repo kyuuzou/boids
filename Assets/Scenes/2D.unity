@@ -2625,7 +2625,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1675698830}
   m_Direction: 0
   m_MinValue: 1
-  m_MaxValue: 500
+  m_MaxValue: 1000
   m_WholeNumbers: 1
   m_Value: 1
   m_OnValueChanged:
@@ -5967,6 +5967,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cellSize: 5
+  neighbourCellDistance: 2
 --- !u!1 &1724812919
 GameObject:
   m_ObjectHideFlags: 0
