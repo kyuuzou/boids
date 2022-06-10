@@ -1,5 +1,6 @@
 using UnityEngine;
 
+public delegate void ShowGridChangedHandler(bool showGrid);
 public delegate void TotalBoidsChangedHandler(int boids);
 
 public class Settings : ScriptableObject {
@@ -27,6 +28,17 @@ public class Settings : ScriptableObject {
     [field: Header("World")]
     [field: SerializeField]
     public bool TestSubject { get; set; }
+
+    [SerializeField] 
+    private bool showGrid;
+    public bool ShowGrid {
+        get => this.showGrid;
+        set {
+            this.showGrid = value;
+            this.ShowGridChanged?.Invoke(value);
+        }
+    }
+    public event ShowGridChangedHandler ShowGridChanged;
 
     [field: SerializeField]
     public bool WrapAroundBoundingVolume { get; set; }

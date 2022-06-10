@@ -12,8 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 17d6a734466b8440baecde405519e480, type: 3}
   m_Name: Settings
   m_EditorClassIdentifier: 
-  <TotalBoids>k__BackingField: 100
+  totalBoids: 44
   <MaximumSpeed>k__BackingField: 0.4
   <MinimumSpeed>k__BackingField: 0.2
   <TestSubject>k__BackingField: 0
+  showGrid: 0
   <WrapAroundBoundingVolume>k__BackingField: 1

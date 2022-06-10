@@ -57,6 +57,9 @@ public class UIManager : MonoBehaviour {
     private Settings settings;
 
     [SerializeField]
+    private Toggle showGrid;
+    
+    [SerializeField]
     private Toggle testSubject;
     
     [SerializeField]
@@ -65,6 +68,10 @@ public class UIManager : MonoBehaviour {
     [SerializeField]
     private Toggle wrapAroundBoundingVolume;
 
+    private void OnShowGridChanged(bool showgrid) {
+        this.boundingVolume.enabled = showgrid;
+    }
+    
     private void Start() {
         this.boundsAvoidanceAversion.value = this.boundsAvoidance.Aversion;
         this.boundsAvoidanceMargin.value = this.boundsAvoidance.Margin;
@@ -81,10 +88,12 @@ public class UIManager : MonoBehaviour {
         this.settings.Bounds = this.boundingVolume.bounds;
         this.minimumSpeed.value = this.settings.MinimumSpeed;
         this.maximumSpeed.value = this.settings.MaximumSpeed;
+        this.showGrid.isOn = this.settings.ShowGrid;
         this.testSubject.isOn = this.settings.TestSubject;
         this.totalBoids.value = this.settings.TotalBoidsFloat;
         this.wrapAroundBoundingVolume.isOn = this.settings.WrapAroundBoundingVolume;
         
-        this.boundingVolume.enabled = false;
+        this.OnShowGridChanged(this.settings.ShowGrid);
+        this.settings.ShowGridChanged += this.OnShowGridChanged;
     }
 }
