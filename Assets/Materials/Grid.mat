@@ -57,5 +57,5 @@ Material:
     - _MainColor: {r: 0.5, g: 1, b: 1, a: 1}
     - _SecondaryColor: {r: 1, g: 0.92013705, b: 0, a: 1}
     - _Size: {r: 0.05, g: 1, b: 0, a: 0}
-    - _color: {r: 0.3820755, g: 0.6845176, b: 1, a: 1}
+    - _color: {r: 0.005606967, g: 0.055492643, b: 0.3962264, a: 1}
   m_BuildTextureStacks: []

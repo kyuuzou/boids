@@ -23,8 +23,8 @@ public struct Boid : IEquatable<Boid> {
         this.Acceleration = Vector3.zero;
         this.Cell = new Vector2Int(int.MinValue, int.MinValue);
 
-        Color randomYellowish = Random.ColorHSV(0.14f, 0.17f, 0.5f, 1.0f, 0.5f, 1.0f, 1.0f, 1.0f);
-        this.SetColor(randomYellowish);
+        Color randomGreenish = Random.ColorHSV(0.2f, 0.46f, 0.5f, 1.0f, 0.5f, 1.0f, 1.0f, 1.0f);
+        this.SetColor(randomGreenish);
 
         transform.name = $"Boid {Boid.LastIdentifier}";
     }
