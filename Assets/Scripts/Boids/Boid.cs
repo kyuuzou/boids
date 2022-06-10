@@ -1,15 +1,14 @@
-using System;
 using UnityEngine;
 
 using Random = UnityEngine.Random;
 
-public struct Boid : IEquatable<Boid> {
-    public readonly int Identifier;
-    public readonly Transform Transform;
-    public Vector3 Acceleration;
-    public Vector3 Position;
-    public Vector3 Velocity;
-    public Vector2Int Cell; 
+public class Boid {
+    public int Identifier { get; }
+    public Transform Transform { get; }
+    public Vector3 Acceleration { get; set; }
+    public Vector3 Position { get; set; }
+    public Vector3 Velocity { get; set; }
+    public Vector2Int Cell { get; set; }
     
     private static int LastIdentifier = 0;
     
@@ -29,25 +28,10 @@ public struct Boid : IEquatable<Boid> {
         transform.name = $"Boid {Boid.LastIdentifier}";
     }
         
-    public static bool operator ==(Boid left, Boid right) => Equals(left, right);
-    public static bool operator !=(Boid left, Boid right) => !Equals(left, right);
-
     public bool CanSee(Boid boid) {
         return Vector2.Distance(this.Position, boid.Position) < 10.0f;
     }
     
-    public bool Equals(Boid other) {
-        return this.Identifier == other.Identifier;
-    }
-        
-    public override bool Equals(object obj) {
-        return obj is Boid other && this.Equals(other);
-    }
-
-    public override int GetHashCode() {
-        return this.Identifier;
-    }
-
     public void SetColor(Color color) {
         this.Transform.GetComponent<MeshRenderer>().material.color = color;
     }

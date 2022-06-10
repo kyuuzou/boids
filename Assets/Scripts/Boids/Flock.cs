@@ -26,7 +26,7 @@ public class Flock : MonoBehaviour {
     private Dictionary<int, Boid> boidByIdentifier = new ();
     private TestSubjectDecorator testSubjectDecorator;
  
-    private void LimitSpeed(ref Boid boid) {
+    private void LimitSpeed(Boid boid) {
         float speed = boid.Velocity.magnitude;
 
         if (speed > this.settings.MaximumSpeed) {
@@ -45,7 +45,7 @@ public class Flock : MonoBehaviour {
             for (int i = newTotal; i < currentTotal; i++) {
                 Boid boid = this.boids[i];
                 Object.Destroy(boid.Transform.gameObject);
-                this.grid.Remove(ref boid);
+                this.grid.Remove(boid);
                 this.boidByIdentifier.Remove(boid.Identifier);
             }
             
@@ -61,7 +61,7 @@ public class Flock : MonoBehaviour {
             float speed = Random.Range(this.settings.MinimumSpeed, this.settings.MaximumSpeed); 
             
             Boid boid = new Boid(transform, speed);
-            this.grid.Add(ref boid);
+            this.grid.Add(boid);
             this.boids.Add(boid);
             this.boidByIdentifier[boid.Identifier] = boid;
         }
@@ -75,43 +75,35 @@ public class Flock : MonoBehaviour {
     }
 
     private void Update() {
-        for (int i = 0; i < this.boids.Count; i ++) {
-            Boid boid = this.boids[i];
+        foreach (Boid boid in this.boids) {
             Vector2 acceleration = Vector2.zero;
-
-            List<int> identifiers = this.grid.CalculateNeighbours(boid.Cell);
-            List<Boid> neighbours = new List<Boid>(identifiers.Count);
-
-            foreach (int identifier in identifiers) {
-                neighbours.Add(this.boidByIdentifier[identifier]);
-            }
+            List<Boid> neighbours = this.grid.CalculateNeighbours(boid.Cell);
             
             foreach (BehaviourBase behaviour in this.behaviours) {
-                acceleration += behaviour.CalculateVelocity(ref boid, neighbours);
+                acceleration += behaviour.CalculateVelocity(boid, neighbours);
             }
 
             acceleration *= Time.deltaTime;
             boid.Acceleration = acceleration;
             
             if (!Mathf.Approximately(acceleration.magnitude, 0.0f)) {
-                boid.Velocity += Vector3.RotateTowards(boid.Velocity, acceleration, 5.0f, this.settings.MaximumSpeed);
-                boid.Velocity.z = 0.0f;
+                Vector3 velocity = Vector3.RotateTowards(boid.Velocity, acceleration, 5.0f, this.settings.MaximumSpeed);
+                velocity.z = 0.0f;
+                boid.Velocity += velocity;
             }
             
-            this.LimitSpeed(ref boid);
+            this.LimitSpeed(boid);
 
             boid.Position += boid.Velocity;
 
             if (this.settings.WrapAroundBoundingVolume) {
-                this.WrapAroundBounds(ref boid);
+                this.WrapAroundBounds(boid);
             }
 
             boid.Transform.position = boid.Position;
-            this.grid.Move(ref boid);
+            this.grid.Move(boid);
             
             boid.Transform.up = boid.Velocity.normalized;
-            boids[i] = boid;
-            this.boidByIdentifier[boid.Identifier] = boid;
         }
 
         if (this.settings.TestSubject) {
@@ -119,7 +111,7 @@ public class Flock : MonoBehaviour {
         }
     }    
 
-    private void WrapAroundBounds(ref Boid boid) {
+    private void WrapAroundBounds(Boid boid) {
         if (! this.settings.Bounds.Contains(boid.Position)) {
             Bounds bounds = this.settings.Bounds;
             Vector3 position = boid.Position;

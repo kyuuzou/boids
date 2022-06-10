@@ -12,7 +12,7 @@ public class BoundsAvoidance : BehaviourBase {
     [field: SerializeField]
     public float Weight { get; set; } = 1.0f;
 
-    public override Vector2 CalculateVelocity(ref Boid boid, List<Boid> neighbours) {
+    public override Vector2 CalculateVelocity(Boid boid, List<Boid> neighbours) {
         if (Mathf.Approximately(this.Weight, 0.0f)) {
             return Vector3.zero;
         }

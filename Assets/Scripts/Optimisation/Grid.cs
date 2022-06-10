@@ -14,7 +14,7 @@ public class Grid : MonoBehaviour {
     private SpriteRenderer spriteRenderer;
 
     // Using a dictionary so that the grid becomes essentially infinite in all directions
-    private Dictionary<Vector2Int, HashSet<int>> cells;
+    private Dictionary<Vector2Int, HashSet<Boid>> cells;
     private Vector4[] occupiedCells;
 
     private static readonly int ShaderCellSize = Shader.PropertyToID("_cellSize");
@@ -23,7 +23,7 @@ public class Grid : MonoBehaviour {
     
     private void Awake() {
         this.spriteRenderer = this.GetComponent<SpriteRenderer>();
-        this.cells = new Dictionary<Vector2Int, HashSet<int>>();
+        this.cells = new Dictionary<Vector2Int, HashSet<Boid>>();
         
         // TODO: use a buffer that can expand so it's not necessary to try to predict the maximum number of cells.
         // From the documentation: "The array length can't be changed once it has been added to the block. If you
@@ -37,17 +37,17 @@ public class Grid : MonoBehaviour {
         this.spriteRenderer.sharedMaterial.SetFloat(Grid.ShaderCellSize, this.cellSize);
     }
 
-    public void Add(ref Boid boid) {
+    public void Add(Boid boid) {
         Vector2Int cell = this.CalculateCell(boid.Position);
-        this.Add(ref boid, cell);
+        this.Add(boid, cell);
     }
 
-    private void Add(ref Boid boid, Vector2Int cell) {
+    private void Add(Boid boid, Vector2Int cell) {
         if (!this.cells.ContainsKey(cell)) {
-            this.cells[cell] = new HashSet<int>();
+            this.cells[cell] = new HashSet<Boid>();
         }
   
-        this.cells[cell].Add(boid.Identifier);
+        this.cells[cell].Add(boid);
         boid.Cell = cell;
     }
     
@@ -58,8 +58,8 @@ public class Grid : MonoBehaviour {
         );
     }
 
-    public List<int> CalculateNeighbours(Vector2Int cell) {
-        List<int> neighbours = new List<int>();
+    public List<Boid> CalculateNeighbours(Vector2Int cell) {
+        List<Boid> neighbours = new List<Boid>();
 
         for (int x = 0; x < this.neighbourCellDistance * 2 + 1; x++) {
             for (int y = 0; y < this.neighbourCellDistance * 2 + 1; y++) {
@@ -77,15 +77,15 @@ public class Grid : MonoBehaviour {
         return neighbours;
     }
     
-    public void Move(ref Boid boid) {
+    public void Move(Boid boid) {
         Vector2Int cell = this.CalculateCell(boid.Position);
 
         if (boid.Cell == cell) {
             return;
         }
 
-        this.Remove(ref boid);
-        this.Add(ref boid, cell);
+        this.Remove(boid);
+        this.Add(boid, cell);
     }
 
     private void LateUpdate() {
@@ -99,8 +99,8 @@ public class Grid : MonoBehaviour {
         this.spriteRenderer.sharedMaterial.SetVectorArray(Grid.ShaderOccupiedCells, this.occupiedCells);
     }
 
-    public void Remove(ref Boid boid) {
-        this.cells[boid.Cell].Remove(boid.Identifier);
+    public void Remove(Boid boid) {
+        this.cells[boid.Cell].Remove(boid);
   
         if (this.cells[boid.Cell].Count == 0) {
             this.cells.Remove(boid.Cell);
