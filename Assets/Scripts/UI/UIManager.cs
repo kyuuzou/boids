@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -68,6 +69,10 @@ public class UIManager : MonoBehaviour {
     [SerializeField]
     private Toggle wrapAroundBoundingVolume;
 
+    private void Awake() {
+        this.settings.Bounds = this.boundingVolume.bounds;
+    }
+
     private void OnShowGridChanged(bool showgrid) {
         this.boundingVolume.enabled = showgrid;
     }
@@ -85,7 +90,6 @@ public class UIManager : MonoBehaviour {
 
         this.velocityMatchingWeight.value = this.velocityMatching.Weight;
 
-        this.settings.Bounds = this.boundingVolume.bounds;
         this.minimumSpeed.value = this.settings.MinimumSpeed;
         this.maximumSpeed.value = this.settings.MaximumSpeed;
         this.showGrid.isOn = this.settings.ShowGrid;
