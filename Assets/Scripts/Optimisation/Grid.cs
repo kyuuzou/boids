@@ -6,6 +6,10 @@ public class Grid : MonoBehaviour {
 
     [SerializeField]
     private float cellSize = 10.0f;
+
+    [Tooltip("How many cells away before a boid is no longer considered a neighbour.")]
+    [SerializeField]
+    private int neighbourCellDistance = 2;
     
     private SpriteRenderer spriteRenderer;
 
@@ -33,13 +37,6 @@ public class Grid : MonoBehaviour {
         this.spriteRenderer.sharedMaterial.SetFloat(Grid.ShaderCellSize, this.cellSize);
     }
 
-    private Vector2Int CalculateCell(Vector2 position) {
-        return new Vector2Int(
-            (int)(position.x / cellSize + 1 * Mathf.Sign(position.x)),
-            (int)(position.y / cellSize + 1 * Mathf.Sign(position.y))
-        );
-    }
-    
     public void Add(ref Boid boid) {
         Vector2Int cell = this.CalculateCell(boid.Position);
         this.Add(ref boid, cell);
@@ -52,6 +49,32 @@ public class Grid : MonoBehaviour {
   
         this.cells[cell].Add(boid.Identifier);
         boid.Cell = cell;
+    }
+    
+    private Vector2Int CalculateCell(Vector2 position) {
+        return new Vector2Int(
+            (int)(position.x / cellSize + 1 * Mathf.Sign(position.x)),
+            (int)(position.y / cellSize + 1 * Mathf.Sign(position.y))
+        );
+    }
+
+    public List<int> CalculateNeighbours(Vector2Int cell) {
+        List<int> neighbours = new List<int>();
+
+        for (int x = 0; x < this.neighbourCellDistance * 2 + 1; x++) {
+            for (int y = 0; y < this.neighbourCellDistance * 2 + 1; y++) {
+                Vector2Int neighbourCell = new Vector2Int(
+                    cell.x + x - this.neighbourCellDistance,
+                    cell.y + y - this.neighbourCellDistance
+                );
+
+                if (this.cells.ContainsKey(neighbourCell)) {
+                    neighbours.AddRange(this.cells[neighbourCell]);
+                }
+            }
+        }
+        
+        return neighbours;
     }
     
     public void Move(ref Boid boid) {

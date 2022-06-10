@@ -22,7 +22,8 @@ public class Flock : MonoBehaviour {
     [SerializeField]
     private Grid grid;
     
-    private List<Boid> boids = new List<Boid>();
+    private List<Boid> boids = new ();
+    private Dictionary<int, Boid> boidByIdentifier = new ();
     private TestSubjectDecorator testSubjectDecorator;
  
     private void LimitSpeed(ref Boid boid) {
@@ -45,6 +46,7 @@ public class Flock : MonoBehaviour {
                 Boid boid = this.boids[i];
                 Object.Destroy(boid.Transform.gameObject);
                 this.grid.Remove(ref boid);
+                this.boidByIdentifier.Remove(boid.Identifier);
             }
             
             this.boids.RemoveRange(newTotal, currentTotal - newTotal);
@@ -61,6 +63,7 @@ public class Flock : MonoBehaviour {
             Boid boid = new Boid(transform, speed);
             this.grid.Add(ref boid);
             this.boids.Add(boid);
+            this.boidByIdentifier[boid.Identifier] = boid;
         }
     }
     
@@ -75,9 +78,16 @@ public class Flock : MonoBehaviour {
         for (int i = 0; i < this.boids.Count; i ++) {
             Boid boid = this.boids[i];
             Vector2 acceleration = Vector2.zero;
+
+            List<int> identifiers = this.grid.CalculateNeighbours(boid.Cell);
+            List<Boid> neighbours = new List<Boid>(identifiers.Count);
+
+            foreach (int identifier in identifiers) {
+                neighbours.Add(this.boidByIdentifier[identifier]);
+            }
             
             foreach (BehaviourBase behaviour in this.behaviours) {
-                acceleration += behaviour.CalculateVelocity(ref boid, this.boids);
+                acceleration += behaviour.CalculateVelocity(ref boid, neighbours);
             }
 
             acceleration *= Time.deltaTime;
@@ -101,6 +111,7 @@ public class Flock : MonoBehaviour {
             
             boid.Transform.up = boid.Velocity.normalized;
             boids[i] = boid;
+            this.boidByIdentifier[boid.Identifier] = boid;
         }
 
         if (this.settings.TestSubject) {
