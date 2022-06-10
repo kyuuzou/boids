@@ -4,7 +4,8 @@ public delegate void TotalBoidsChangedHandler(int boids);
 
 public class Settings : ScriptableObject {
 
-    [field: Header("Boids")]
+    [Header("Boids")]
+    [SerializeField]
     private int totalBoids = 100;
     public int TotalBoids {
         get => this.totalBoids;
