@@ -5966,8 +5966,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9bfd302fe0a914dc49ec7d4d9eb959d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cellSize: 5
-  neighbourCellDistance: 2
+  cellSize: 2.5
+  neighbourCellDistance: 3
 --- !u!1 &1724812919
 GameObject:
   m_ObjectHideFlags: 0
@@ -7499,7 +7499,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 7750393462520356620, guid: a6821fc29ee57497291d35f62d4b14a8, type: 3}
       propertyPath: m_Name
-      value: Bounding Volume
+      value: Grid
       objectReference: {fileID: 0}
     - target: {fileID: 7750393462520356620, guid: a6821fc29ee57497291d35f62d4b14a8, type: 3}
       propertyPath: m_IsActive

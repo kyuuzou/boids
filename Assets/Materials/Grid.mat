@@ -46,7 +46,7 @@ Material:
     - _StencilWriteMask: 255
     - _Thickness: 0.0015
     - _UseUIAlphaClip: 0
-    - _cellSize: 5
+    - _cellSize: 2.5
     - _gridSize: 0.079365075
     - _thickness: 0.2
     m_Colors:
