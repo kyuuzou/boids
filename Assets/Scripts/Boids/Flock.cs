@@ -54,8 +54,14 @@ public class Flock : MonoBehaviour {
     }
 
     private void SpawnBoids(int total) {
+        Bounds bounds = this.settings.Bounds;
+        
         for (int i = 0; i < total; i++) {
-            Vector3 position = Random.insideUnitCircle * this.settings.Bounds.extents.x;
+            Vector2 position = new Vector2(
+                Random.Range(bounds.min.x, bounds.max.x),
+                Random.Range(bounds.min.y, bounds.max.y)
+            );
+
             Quaternion rotation = Quaternion.Euler(0.0f, 0.0f, Random.Range(0.0f, 360.0f));
             Transform transform = Object.Instantiate<Transform>(this.boidPrefab, position, rotation, this.boidParent);
             float speed = Random.Range(this.settings.MinimumSpeed, this.settings.MaximumSpeed); 
