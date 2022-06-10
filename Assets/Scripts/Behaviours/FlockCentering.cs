@@ -18,10 +18,6 @@ public class FlockCentering : BehaviourBase {
         int perceivedBoids = 0;
 
         foreach (Boid neighbour in neighbours) {
-            if (boid == neighbour || !boid.CanSee(neighbour)) {
-                continue;
-            }
-            
             perceivedCenter += neighbour.Position;
             perceivedBoids ++;
         }

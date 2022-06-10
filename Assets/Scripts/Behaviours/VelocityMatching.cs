@@ -15,10 +15,6 @@ public class VelocityMatching : BehaviourBase {
         int perceivedBoids = 0;
 
         foreach (Boid neighbour in neighbours) {
-            if (boid == neighbour || ! boid.CanSee(neighbour)) {
-                continue;
-            }
-
             velocityAverage += neighbour.Velocity;
             perceivedBoids ++;
         }

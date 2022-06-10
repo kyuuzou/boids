@@ -28,10 +28,6 @@ public class Boid {
         transform.name = $"Boid {Boid.LastIdentifier}";
     }
         
-    public bool CanSee(Boid boid) {
-        return Vector2.Distance(this.Position, boid.Position) < 10.0f;
-    }
-    
     public void SetColor(Color color) {
         this.Transform.GetComponent<MeshRenderer>().material.color = color;
     }

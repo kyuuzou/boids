@@ -58,14 +58,14 @@ public class Grid : MonoBehaviour {
         );
     }
 
-    public List<Boid> CalculateNeighbours(Vector2Int cell) {
+    public List<Boid> CalculateNeighbours(Boid boid) {
         List<Boid> neighbours = new List<Boid>();
 
         for (int x = 0; x < this.neighbourCellDistance * 2 + 1; x++) {
             for (int y = 0; y < this.neighbourCellDistance * 2 + 1; y++) {
                 Vector2Int neighbourCell = new Vector2Int(
-                    cell.x + x - this.neighbourCellDistance,
-                    cell.y + y - this.neighbourCellDistance
+                    boid.Cell.x + x - this.neighbourCellDistance,
+                    boid.Cell.y + y - this.neighbourCellDistance
                 );
 
                 if (this.cells.ContainsKey(neighbourCell)) {
@@ -73,7 +73,8 @@ public class Grid : MonoBehaviour {
                 }
             }
         }
-        
+
+        neighbours.Remove(boid);
         return neighbours;
     }
     

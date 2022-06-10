@@ -77,7 +77,7 @@ public class Flock : MonoBehaviour {
     private void Update() {
         foreach (Boid boid in this.boids) {
             Vector2 acceleration = Vector2.zero;
-            List<Boid> neighbours = this.grid.CalculateNeighbours(boid.Cell);
+            List<Boid> neighbours = this.grid.CalculateNeighbours(boid);
             
             foreach (BehaviourBase behaviour in this.behaviours) {
                 acceleration += behaviour.CalculateVelocity(boid, neighbours);
