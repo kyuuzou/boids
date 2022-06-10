@@ -18,6 +18,9 @@ public class Flock : MonoBehaviour {
     
     [SerializeField]
     private Transform boidPrefab;
+
+    [SerializeField]
+    private Grid grid;
     
     private List<Boid> boids = new List<Boid>();
     private TestSubjectDecorator testSubjectDecorator;
@@ -39,7 +42,9 @@ public class Flock : MonoBehaviour {
             this.SpawnBoids(newTotal - currentTotal);
         } else if (newTotal < currentTotal) {
             for (int i = newTotal; i < currentTotal; i++) {
-                Object.Destroy(this.boids[i].Transform.gameObject);
+                Boid boid = this.boids[i];
+                Object.Destroy(boid.Transform.gameObject);
+                this.grid.Remove(ref boid);
             }
             
             this.boids.RemoveRange(newTotal, currentTotal - newTotal);
@@ -54,6 +59,7 @@ public class Flock : MonoBehaviour {
             float speed = Random.Range(this.settings.MinimumSpeed, this.settings.MaximumSpeed); 
             
             Boid boid = new Boid(transform, speed);
+            this.grid.Add(ref boid);
             this.boids.Add(boid);
         }
     }
@@ -91,6 +97,8 @@ public class Flock : MonoBehaviour {
             }
 
             boid.Transform.position = boid.Position;
+            this.grid.Move(ref boid);
+            
             boid.Transform.up = boid.Velocity.normalized;
             boids[i] = boid;
         }
