@@ -55,6 +55,9 @@ public class UIManager : MonoBehaviour {
     private Slider minimumSpeed;
 
     [SerializeField]
+    private Slider maximumPerceivableBoids;
+
+    [SerializeField]
     private Settings settings;
 
     [SerializeField]
@@ -69,12 +72,34 @@ public class UIManager : MonoBehaviour {
     [SerializeField]
     private Toggle wrapAroundBoundingVolume;
 
+    [Header("Counters")] 
+    [SerializeField]
+    private Text boidCounter;
+
+    [SerializeField]
+    private Text fpsCounter;
+
+    [SerializeField]
+    private float fpsUpdateRate = 4.0f;
+ 
+    private int frameCount = 0;
+    private float deltaTime = 0.0f;
+    private float fps = 0.0f;
+    
+    public float MaximumPerceivableBoidsFloat { set => this.settings.MaximumPerceivableBoids = (int) value; }
+    public float TotalBoidsFloat { set => this.settings.TotalBoids = (int) value; }
+
     private void Awake() {
         this.settings.Bounds = this.boundingVolume.bounds;
     }
 
-    private void OnShowGridChanged(bool showgrid) {
-        this.boundingVolume.enabled = showgrid;
+    private void LateUpdate() {
+        this.boidCounter.text = $"total boids: {this.settings.TotalBoids}";
+        this.UpdateFrameRate();
+    }
+
+    private void OnShowGridChanged(bool showGrid) {
+        this.boundingVolume.enabled = showGrid;
     }
     
     private void Start() {
@@ -92,12 +117,26 @@ public class UIManager : MonoBehaviour {
 
         this.minimumSpeed.value = this.settings.MinimumSpeed;
         this.maximumSpeed.value = this.settings.MaximumSpeed;
+        this.maximumPerceivableBoids.value = this.settings.MaximumPerceivableBoids;
         this.showGrid.isOn = this.settings.ShowGrid;
         this.testSubject.isOn = this.settings.TestSubject;
-        this.totalBoids.value = this.settings.TotalBoidsFloat;
+        this.totalBoids.value = this.settings.TotalBoids;
         this.wrapAroundBoundingVolume.isOn = this.settings.WrapAroundBoundingVolume;
         
         this.OnShowGridChanged(this.settings.ShowGrid);
         this.settings.ShowGridChanged += this.OnShowGridChanged;
+    }
+    
+    private void UpdateFrameRate() {
+        this.frameCount++;
+        this.deltaTime += Time.unscaledDeltaTime;
+        
+        if (this.deltaTime > 1.0f / this.fpsUpdateRate) {
+            this.fps = this.frameCount / this.deltaTime;
+            this.frameCount = 0;
+            this.deltaTime -= 1.0f / this.fpsUpdateRate;
+        }
+        
+        this.fpsCounter.text = $"fps: {this.fps:F1}";
     }
 }

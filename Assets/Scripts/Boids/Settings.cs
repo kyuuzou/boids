@@ -16,7 +16,6 @@ public class Settings : ScriptableObject {
         }
     }
 
-    public float TotalBoidsFloat { get => this.TotalBoids; set => this.TotalBoids = (int) value; }
     public event TotalBoidsChangedHandler TotalBoidsChanged;
     
     [field: SerializeField]
@@ -25,6 +24,9 @@ public class Settings : ScriptableObject {
     [field: SerializeField]
     public float MinimumSpeed { get; set; } = 0.2f;
     
+    [field: SerializeField]
+    public int MaximumPerceivableBoids { get; set; } = 10;
+
     [field: Header("World")]
     [field: SerializeField]
     public bool TestSubject { get; set; }

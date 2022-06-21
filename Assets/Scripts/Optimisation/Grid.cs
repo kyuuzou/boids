@@ -10,6 +10,9 @@ public class Grid : MonoBehaviour {
     [Tooltip("How many cells away before a boid is no longer considered a neighbour.")]
     [SerializeField]
     private int neighbourCellDistance = 2;
+
+    [SerializeField]
+    private Settings settings;
     
     private SpriteRenderer spriteRenderer;
 
@@ -60,7 +63,12 @@ public class Grid : MonoBehaviour {
 
     public List<Boid> CalculateNeighbours(Boid boid) {
         List<Boid> neighbours = new List<Boid>();
+        int maximumPerceivableNeighbours = this.settings.MaximumPerceivableBoids;
 
+        if (maximumPerceivableNeighbours == 0) {
+            maximumPerceivableNeighbours = int.MaxValue;
+        }
+        
         for (int x = 0; x < this.neighbourCellDistance * 2 + 1; x++) {
             for (int y = 0; y < this.neighbourCellDistance * 2 + 1; y++) {
                 Vector2Int neighbourCell = new Vector2Int(
@@ -69,11 +77,20 @@ public class Grid : MonoBehaviour {
                 );
 
                 if (this.cells.ContainsKey(neighbourCell)) {
-                    neighbours.AddRange(this.cells[neighbourCell]);
+                    HashSet<Boid> perceivableNeighbours = this.cells[neighbourCell];
+
+                    foreach (Boid neighbour in perceivableNeighbours) {
+                        neighbours.Add(neighbour);
+
+                        if (maximumPerceivableNeighbours-- > 0) {
+                            goto calculate_neighbours_break_nested;
+                        }
+                    }
                 }
             }
         }
 
+        calculate_neighbours_break_nested:
         neighbours.Remove(boid);
         return neighbours;
     }
