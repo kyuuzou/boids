@@ -30,7 +30,8 @@ An experiment with boids in Unity.
 Mostly because I wanted to play around with Boids! I keep seeing all of these implementations with all kinds of cool techniques, and finally decided to give it a go myself. The intention of this project is as follows:  
 
 - [x] Implement the three core steering behaviours for Simulated Flocks, as per Craig Reynold's original 1987's [Flocks, Herds, and Schools: A Distributed Behavioral Model](https://www.red3d.com/cwr/boids/).
-- [x] Optimise collision detection with dynamic spatial partitioning or equivalent technique, for maximum possible supported number of boids.
+- [x] Optimise collision detection with dynamic spatial partitioning or equivalent technique.
+- [ ] Further optimise collision detection with the DOTS system.
 - [ ] Implement remaining behaviours described in the model, such as Simulated Perception, Scripted Flocking and Environmental Obstacle Avoidance.
 - [ ] Switch between 2D and 3D.
 - [ ] Implement additional interesting behaviours, such as perching, hunger and predators.
