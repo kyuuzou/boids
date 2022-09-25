@@ -12,6 +12,7 @@
 </p>
 <p align="center">
   <a href="https://www.codacy.com/gh/kyuuzou/boids/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=kyuuzou/boids&amp;utm_campaign=Badge_Grade"><img src="https://app.codacy.com/project/badge/Grade/0e148b21eaa742448a210882d88a9f0c"/></a>
+  <a href="https://unity3d.com/get-unity/download/archive" target="_blank"><img src="https://img.shields.io/badge/Unity-2021.3-blue" /></a>
   <a href="https://github.com/kyuuzou/boids/blob/master/LICENSE" target="_blank">
     <img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-blue.svg" />
   </a>
